@@ -7,12 +7,14 @@ namespace BookShelf.Models
 {
     public class Book
     {
+        static int count = 0;
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Author { get; set; }
-        public int Pages { get; set; }
-        public string ISBN { get; set; }
-        public int Year { get; set; }
-        public string Publisher { get; set; }
+
+        public Book(string title)
+        {
+            this.Id = count++;
+            this.Title = title;
+        }
     }
 }
