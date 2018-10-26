@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using BookShelf.Models;
+using BookShelf.BookService;
 
 namespace BookShelf
 {
@@ -29,6 +30,7 @@ namespace BookShelf
         {
             //services.AddDbContext<BookContext>(opt =>
             //    opt.UseInMemoryDatabase("BookList"));
+            services.AddSingleton<IBook, BookList>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

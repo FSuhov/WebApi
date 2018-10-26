@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookShelf.Models;
+using BookShelf.BookService;
 
 namespace BookShelf.Controllers
 {
@@ -11,14 +12,15 @@ namespace BookShelf.Controllers
     {
         private List<Book> books;
 
-        public BookController()
+        public BookController(IBook booklist)
         {
-            if (books == null || books.Count == 0)
-            {
-                books = new List<Book>();
-                books.Add(new Book("War and Piece"));
-                books.Add(new Book("Anna Korenina"));
-            }
+            books = booklist.getAll();
+            //if (books == null || books.Count == 0)
+            //{
+            //    books = new List<Book>();
+            //    books.Add(new Book("War and Piece"));
+            //    books.Add(new Book("Anna Korenina"));
+            //}
         }
 
         [HttpGet]
