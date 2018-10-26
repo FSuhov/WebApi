@@ -12,5 +12,6 @@ namespace BookShelf.BookService
         Book getOne(int id);
         void UpdateBook(int id, Book book);
         void Delete(int id);
+        int Add(Book book);
     }
 }
