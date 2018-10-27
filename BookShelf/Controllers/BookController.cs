@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookShelf.Models;
+using BookShelf.LibraryService;
 
 namespace BookShelf.Controllers
 {
@@ -9,37 +10,23 @@ namespace BookShelf.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly BookContext _context;
+        private readonly ILibrary _library;
 
-        public BookController(BookContext context)
+        public BookController(ILibrary library)
         {
-            _context = context;
-
-            if(_context.Books.Count() == 0)
-            {
-                _context.Books.Add(new Book
-                {
-                    Title = TestBook.TITLE,
-                    Author = TestBook.AUTHOR,
-                    Publisher = TestBook.PUBLISHER,
-                    Pages = TestBook.PAGES,
-                    Year = TestBook.YEAR,
-                    ISBN = TestBook.ISBN
-                });
-                _context.SaveChanges();
-            }
+            this._library = library;
         }
 
         [HttpGet]
         public ActionResult<List<Book>> GetAll()
         {
-            return _context.Books.ToList();
+            return _library.GetBooks();
         }
 
         [HttpGet("{id}", Name = "GetBook")]
         public ActionResult<Book> GetById(int id)
         {
-            var item = _context.Books.Find(id);
+            var item = _library.GetBookById(id);
             if(item == null)
             {
                 return NotFound();
@@ -48,57 +35,51 @@ namespace BookShelf.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Book book)
+        public IActionResult Create(Book item)
         {
-            _context.Books.Add(book);
-            _context.SaveChanges();
+            _library.AddBook(item);
 
-            return CreatedAtRoute("GetBook", new { id = book.Id }, book);
+            return CreatedAtRoute("GetBook", new { id = item.Id }, item);
+        }
+
+        [HttpPut("{bookId}/{authorId}")]
+        public IActionResult Update(int bookId, int authorId)
+        {
+            var book = _library.GetBookById(bookId);
+            var author = _library.GetAuthorById(authorId);
+            if (book == null || author == null)
+            {
+                return NotFound();
+            }
+            else _library.UpdateBook(bookId, authorId);
+
+            return NoContent();
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, Book item)
         {
-            var book = _context.Books.Find(id);
-            if(book == null)
+            var book = _library.GetBookById(id);
+            if (book == null)
             {
                 return NotFound();
             }
+            else _library.UpdateBook(id, item);
 
-            book.Title = item.Title;
-            book.Author = item.Author;
-            book.Pages = item.Pages;
-            book.Publisher = item.Publisher;
-            book.Year = item.Year;
-            book.ISBN = item.ISBN;
-
-            _context.Books.Update(book);
-            _context.SaveChanges();
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var book = _context.Books.Find(id);
-            if(book == null)
+            var book = _library.GetBookById(id);
+            if (book == null)
             {
                 return NotFound();
             }
+            else _library.DeleteBook(id);
 
-            _context.Books.Remove(book);
-            _context.SaveChanges();
             return NoContent();
         }
-    }
-
-    public static class TestBook
-    {
-        public const string TITLE = "War and piece";
-        public const string AUTHOR = "Leo Tolstoy";
-        public const string PUBLISHER = "PITER LTD";
-        public const int PAGES = 1920;
-        public const int YEAR = 2010;
-        public const string ISBN = "111-2450-9011";
     }
 }

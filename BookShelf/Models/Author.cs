@@ -5,18 +5,16 @@ using System.Threading.Tasks;
 
 namespace BookShelf.Models
 {
-    public class Book
+    public class Author
     {
         static int counter = 0;
         public int Id { get; set; }
-        public string Title { get; set; }
-        public int? AuthorId { get; set; }
+        public string  Name { get; set; }
 
-        public Book(string title, int? authorId = null)
+        public Author(string name)
         {
             this.Id = counter++;
-            this.Title = title;
-            this.AuthorId = authorId;
+            this.Name = name;
         }
     }
 }
