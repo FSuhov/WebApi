@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BookShelf.Models;
 using BookShelf.LibraryService;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 
 namespace BookShelf.Controllers
 {
@@ -27,7 +30,7 @@ namespace BookShelf.Controllers
         public ActionResult<Book> GetById(int id)
         {
             var item = _library.GetBookById(id);
-            if(item == null)
+            if (item == null)
             {
                 return NotFound();
             }
@@ -37,12 +40,14 @@ namespace BookShelf.Controllers
         [HttpPost]
         public IActionResult Create(Book item)
         {
-            _library.AddBook(item);
+            // TODO: Add model validation
 
+            _library.AddBook(item);
             return CreatedAtRoute("GetBook", new { id = item.Id }, item);
         }
 
-        [HttpPut("{bookId}/{authorId}")]
+        // ADD AUTHOR TO BOOK
+        [HttpPut("{bookId}/author/{authorId}")]
         public IActionResult Update(int bookId, int authorId)
         {
             var book = _library.GetBookById(bookId);
@@ -51,7 +56,22 @@ namespace BookShelf.Controllers
             {
                 return NotFound();
             }
-            else _library.UpdateBook(bookId, authorId);
+            else _library.AddAuthorToBook(bookId, authorId);
+
+            return NoContent();
+        }
+
+        // ADD GENRE TO BOOK
+        [HttpPut("{bookId}/genre/{genreId}")]
+        public IActionResult UpdateGenre(int bookId, int genreId)
+        {
+            var book = _library.GetBookById(bookId);
+            var genre = _library.GetAuthorById(genreId);
+            if (book == null || genre == null)
+            {
+                return NotFound();
+            }
+            else _library.AddGenreToBook(bookId, genreId);
 
             return NoContent();
         }
@@ -59,6 +79,8 @@ namespace BookShelf.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, Book item)
         {
+            // TODO: Add model validation
+
             var book = _library.GetBookById(id);
             if (book == null)
             {
@@ -80,6 +102,28 @@ namespace BookShelf.Controllers
             else _library.DeleteBook(id);
 
             return NoContent();
+        }
+
+        [HttpGet("{genreId}/genre", Name = "BooksByGenre")]
+        public ActionResult<List<Book>> GetByGenre(int genreId)
+        {
+            var items = _library.GetBooksByGenre(genreId);
+            if (items.Count == 0)
+            {
+                return NotFound();
+            }
+            return items;
+        }
+
+        [HttpGet("{authorId}/author", Name = "BooksByAuthor")]
+        public ActionResult<List<Book>> GetByAuthor(int authorId)
+        {
+            var items = _library.GetBooksByAuthor(authorId);
+            if (items.Count == 0)
+            {
+                return NotFound();
+            }
+            return items;
         }
     }
 }

@@ -20,6 +20,15 @@ namespace BookShelf.LibraryService
         int AddAuthor(Author author);
         void DeleteAuthor(int id);
 
-        void UpdateBook(int bookId, int authorId);
+        List<Genre> GetGenres();
+        Genre GetGenreById(int id);
+        int AddGenre(Genre genre);
+        bool DeleteGenre(int id);
+
+        bool AddAuthorToBook(int bookId, int authorId);
+        bool AddGenreToBook(int bookId, int genreId);
+
+        List<Book> GetBooksByGenre(int genreId);
+        List<Book> GetBooksByAuthor(int authorId);
     }
 }

@@ -6,19 +6,20 @@ using System.Threading.Tasks;
 
 namespace BookShelf.Models
 {
-    public class Author
+    public class Genre
     {
-        static int counter = 0;
+        static int count = 0;
+
         public int Id { get; set; }
 
         [Required]
-        public string  Name { get; set; }
+        public string Name { get; set; }
 
-        //public List<int?> BooksId { get; set; } = new List<int?>();
+        //public List<int> booksId { get; set; } = new List<int>();
 
-        public Author(string name)
+        public Genre(string name)
         {
-            this.Id = counter++;
+            this.Id = count++;
             this.Name = name;
         }
     }
