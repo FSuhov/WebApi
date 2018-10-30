@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BookShelf.LibraryService;
-using BookShelf.Models;
+using BookShelfBusinessLogic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,23 +12,23 @@ namespace BookShelf.Controllers
     [ApiController]
     public class GenreController : ControllerBase
     {
-        private readonly ILibrary _library;
+        LibraryService _service;
 
-        public GenreController(ILibrary library)
+        public GenreController(LibraryContext context)
         {
-            this._library = library;
+            _service = new LibraryService(context);
         }
 
         [HttpGet]
         public ActionResult<List<Genre>> GetAll()
         {
-            return _library.GetGenres();
+            return _service.GetGenres().ToList();
         }
 
-        [HttpGet("{id}", Name = "GetGenre")]
+        [HttpGet("{id}")]
         public ActionResult<Genre> GetById(int id)
         {
-            var item = _library.GetGenreById(id);
+            var item = _service.GetGenreById(id);
             if (item == null)
             {
                 return NotFound();
@@ -38,30 +37,19 @@ namespace BookShelf.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Genre item)
+        public IActionResult Add(Genre genre)
         {
-            _library.AddGenre(item);
-            return CreatedAtRoute("GetGenre", new { id = item.Id }, item);
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var genre = _library.GetGenreById(id);
-            if (genre == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
-            }
-            else
-            {
-                var result = _library.DeleteGenre(id);
-                if (!result)
-                {
-                    return BadRequest();
-                }
+                return BadRequest("Not valid genre");
             }
 
-            return NoContent();
+            if (!_service.AddGenre(genre))
+            {
+                return BadRequest("Already exist");
+            }
+
+            return Created("genre", genre);
         }
     }
 }
