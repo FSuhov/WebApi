@@ -33,7 +33,7 @@ namespace BookShelfBusinessLogic
             {
                 if (item.BookRefId == book.Id)
                 {
-                    Genre genre = context.Genres.First(a => a.Id == item.GenreRefId);
+                    Genre genre = context.Genres.First(g => g.Id == item.GenreRefId);
                     this.Genres.Add(genre.Name);
                 }
             }

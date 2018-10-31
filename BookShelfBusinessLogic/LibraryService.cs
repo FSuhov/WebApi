@@ -215,9 +215,9 @@ namespace BookShelfBusinessLogic
         public IEnumerable<Book> GetBooksByAuthor(int authorId)
         {
             IEnumerable<Book> booksByAuthor = from book in _db.Books
-                                 join entry in _db.BookAuthor on book.Id equals entry.BookRefId
-                                 where entry.AuthorRefId == authorId
-                                 select book;
+                                              join entry in _db.BookAuthor on book.Id equals entry.BookRefId
+                                              where entry.AuthorRefId == authorId
+                                              select book;
 
             return booksByAuthor;
         }
@@ -230,9 +230,9 @@ namespace BookShelfBusinessLogic
         public IEnumerable<Book> GetBooksByGenre(int genreId)
         {
             IEnumerable<Book> booksByGenre = from book in _db.Books
-                                              join entry in _db.BookGenre on book.Id equals entry.BookRefId
-                                              where entry.GenreRefId == genreId
-                                              select book;
+                                             join entry in _db.BookGenre on book.Id equals entry.BookRefId
+                                             where entry.GenreRefId == genreId
+                                             select book;
 
             return booksByGenre;
         }

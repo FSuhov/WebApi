@@ -17,6 +17,7 @@ namespace BookShelfBusinessLogic
         /// Initializes new instance of LibraryContext using options passed on application launch
         /// in the file Startup.cs
         /// </summary>
+        /// /// <param name="options"> An options for connecting to data source </param>
         public LibraryContext(DbContextOptions<LibraryContext> options) : base(options)
         {
         }
