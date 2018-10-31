@@ -91,5 +91,24 @@ namespace BookShelf.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Handles GET request: .../api/genre/1/books
+        /// Gets all books by specified genre
+        /// </summary>
+        /// <param name="id">Id of genre</param>
+        /// <returns>Collection of Books </returns>
+        [HttpGet("{id}/books")]
+        public ActionResult<List<Book>> GetBooksByGenre(int id)
+        {
+            var books = _service.GetBooksByGenre(id).ToList();
+
+            if (books == null)
+            {
+                return NotFound();
+            }
+
+            return books;
+        }
     }
 }

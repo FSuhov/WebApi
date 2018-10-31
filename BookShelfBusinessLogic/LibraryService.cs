@@ -60,12 +60,12 @@ namespace BookShelfBusinessLogic
 
         /// <summary>
         /// Looks for an instance of book with the specifies Id
-        /// and sets it properties equal to the book passed as argument, if found.
+        /// and tries to set its properties equal to the book passed as argument, if found.
         /// </summary>
         /// <param name="id"> Id to look for</param>
         /// <param name="book"> An instance of book  to be copied</param>
         /// <returns> True if such book found and updated, false - if not found </returns>
-        public bool UpdateBook(int id, Book book)
+        public bool IsBookUpdated(int id, Book book)
         {
             Book bookToUpdate = _db.Books.First(b => b.Id == id);
 
@@ -81,11 +81,11 @@ namespace BookShelfBusinessLogic
         }
 
         /// <summary>
-        /// Adds new book to the collection
+        /// Tries to add new book to the collection
         /// </summary>
         /// <param name="book"> An instace of book to be added </param>
         /// <returns> True if added, false if such book already exists </returns>
-        public bool AddBook(Book book)
+        public bool IsBookAdded(Book book)
         {
             Book existingBook = _db.Books.FirstOrDefault(b => b.Id == book.Id);
 
@@ -101,12 +101,12 @@ namespace BookShelfBusinessLogic
         }
 
         /// <summary>
-        /// Removes the book with the specified Id from the collection.
+        /// Tries to remove the book with the specified Id from the collection.
         /// Cascade deletes also an entries in BookGenre and BookAuthor tables.
         /// </summary>
         /// <param name="book"> An id of book to be removed </param>
         /// <returns> True if removed, false if such book not found </returns>
-        public bool DeleteBook(int id)
+        public bool IsBookDeleted(int id)
         {
             Book bookToDelete = _db.Books.FirstOrDefault(b => b.Id == id);
 
@@ -122,12 +122,12 @@ namespace BookShelfBusinessLogic
         }
 
         /// <summary>
-        /// Adds genre to the specified book.
+        /// Tries to add genre to the specified book.
         /// </summary>
         /// <param name="bookId"> Id of book to be updated </param>
         /// <param name="genreId"> Id of genre to be added </param>
         /// <returns> True if updated, false if such genre already added to this book </returns>
-        public bool AddGenreToBook(int bookId, int genreId)
+        public bool IsGenreToBookAdded(int bookId, int genreId)
         {
             BookGenre bookGenre = new BookGenre { BookRefId = bookId, GenreRefId = genreId };
             BookGenre similarEntry = _db.BookGenre.FirstOrDefault(bg => bg.BookRefId == bookId && bg.GenreRefId == genreId);
@@ -144,12 +144,12 @@ namespace BookShelfBusinessLogic
         }
 
         /// <summary>
-        /// Adds author to the specified book.
+        /// Tries to add author to the specified book.
         /// </summary>
         /// <param name="bookId"> Id of book to be updated </param>
         /// <param name="authorId"> Id of author to be added </param>
         /// <returns> True if updated, false if such author already added to this book or such author or book does not exists </returns>
-        public bool AddAuthorToBook(int bookId, int authorId)
+        public bool IsAuthorToBookAdded(int bookId, int authorId)
         {
             BookAuthor bookAuthor = new BookAuthor { BookRefId = bookId, AuthorRefId = authorId };
             BookAuthor similarEntry = _db.BookAuthor.FirstOrDefault(ba => ba.BookRefId == bookId && ba.AuthorRefId == authorId);
@@ -165,12 +165,12 @@ namespace BookShelfBusinessLogic
         }
 
         /// <summary>
-        /// Removes genre from the specified book.
+        /// Tries to remove genre from the specified book.
         /// </summary>
         /// <param name="bookId"> Id of book to be updated </param>
         /// <param name="genreId"> Id of genre to be removed </param>
         /// <returns> True if updated, false if such genre has not been added to this book previously </returns>
-        public bool RemoveGenreFromBook(int bookId, int genreId)
+        public bool IsGenreFromBookRemoved(int bookId, int genreId)
         {
             BookGenre bookGenreToRemove = _db.BookGenre.FirstOrDefault(bg => bg.BookRefId == bookId && bg.GenreRefId == genreId);
 
@@ -187,12 +187,12 @@ namespace BookShelfBusinessLogic
 
 
         /// <summary>
-        /// Removes author from the specified book.
+        /// Tries to remove author from the specified book.
         /// </summary>
         /// <param name="bookId"> Id of book to be updated </param>
         /// <param name="authorId"> Id of author to be removed </param>
         /// <returns> True if updated, false if such author has not been added to this book previously </returns>
-        public bool RemoveAuthorFromBook(int bookId, int authorId)
+        public bool IsAuthorFromBookRemoved(int bookId, int authorId)
         {
             BookAuthor bookAuthorToRemove = _db.BookAuthor.FirstOrDefault(ba => ba.BookRefId == bookId && ba.AuthorRefId == authorId);
 
@@ -205,6 +205,36 @@ namespace BookShelfBusinessLogic
             _db.SaveChanges();
 
             return true;
+        }
+
+        /// <summary>
+        /// Selects all Books by specified author
+        /// </summary>
+        /// <param name="authorId">Id of author</param>
+        /// <returns>The collection of Books </returns>
+        public IEnumerable<Book> GetBooksByAuthor(int authorId)
+        {
+            IEnumerable<Book> booksByAuthor = from book in _db.Books
+                                 join entry in _db.BookAuthor on book.Id equals entry.BookRefId
+                                 where entry.AuthorRefId == authorId
+                                 select book;
+
+            return booksByAuthor;
+        }
+
+        /// <summary>
+        /// Selects all Books by specified genre
+        /// </summary>
+        /// <param name="genreId">Id of genre</param>
+        /// <returns>The collection of Books </returns>
+        public IEnumerable<Book> GetBooksByGenre(int genreId)
+        {
+            IEnumerable<Book> booksByGenre = from book in _db.Books
+                                              join entry in _db.BookGenre on book.Id equals entry.BookRefId
+                                              where entry.GenreRefId == genreId
+                                              select book;
+
+            return booksByGenre;
         }
 
         #endregion

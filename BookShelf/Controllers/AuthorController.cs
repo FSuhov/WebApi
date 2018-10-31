@@ -91,5 +91,24 @@ namespace BookShelf.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Handles GET request: .../api/author/1/books
+        /// Gets all books by specified author
+        /// </summary>
+        /// <param name="id">Id of author</param>
+        /// <returns>Collection of Books </returns>
+        [HttpGet("{id}/books")]
+        public ActionResult<List<Book>> GetBooksByAuthor(int id)
+        {
+            var books = _service.GetBooksByAuthor(id).ToList();
+
+            if (books == null)
+            {
+                return NotFound();
+            }
+
+            return books;
+        }
     }
 }

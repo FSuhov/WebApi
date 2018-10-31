@@ -65,7 +65,7 @@ namespace BookShelf.Controllers
                 return BadRequest("Not valid book");
             }
 
-            if (!_service.UpdateBook(id, book))
+            if (!_service.IsBookUpdated(id, book))
             {
                 return NotFound();
             }
@@ -85,7 +85,7 @@ namespace BookShelf.Controllers
                 return BadRequest("Not valid book");
             }
 
-            if (!_service.AddBook(book))
+            if (!_service.IsBookAdded(book))
             {
                 return BadRequest("Already exist");
             }
@@ -101,7 +101,7 @@ namespace BookShelf.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (!_service.DeleteBook(id))
+            if (!_service.IsBookDeleted(id))
             {
                 return NotFound();
             }
@@ -119,7 +119,7 @@ namespace BookShelf.Controllers
         [HttpPut("{bookId}/genre/{genreId}")]
         public IActionResult AddGenreToBook(int bookId, int genreId)
         {
-            if (!_service.AddGenreToBook(bookId, genreId))
+            if (!_service.IsGenreToBookAdded(bookId, genreId))
             {
                 return BadRequest("Invalid data");
             }
@@ -137,7 +137,7 @@ namespace BookShelf.Controllers
         [HttpPut("{bookId}/genre/{genreId}/remove")]
         public IActionResult RemoveGenreFromBook(int bookId, int genreId)
         {
-            if (!_service.RemoveGenreFromBook(bookId, genreId))
+            if (!_service.IsGenreFromBookRemoved(bookId, genreId))
             {
                 return NotFound();
             }
@@ -155,7 +155,7 @@ namespace BookShelf.Controllers
         [HttpPut("{bookId}/author/{authorId}")]
         public IActionResult AddAuthorToBook(int bookId, int authorId)
         {
-            if (!_service.AddAuthorToBook(bookId, authorId))
+            if (!_service.IsAuthorToBookAdded(bookId, authorId))
             {
                 return BadRequest("Invalid data");
             }
@@ -174,7 +174,7 @@ namespace BookShelf.Controllers
         [HttpPut("{bookId}/author/{genreId}/remove")]
         public IActionResult RemoveAuthorFromBook(int bookId, int authorId)
         {
-            if (!_service.RemoveAuthorFromBook(bookId, authorId))
+            if (!_service.IsAuthorFromBookRemoved(bookId, authorId))
             {
                 return NotFound();
             }

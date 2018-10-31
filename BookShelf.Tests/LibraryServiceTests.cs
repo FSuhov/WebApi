@@ -20,8 +20,8 @@ namespace BookShelf.Tests
             {
                 // Arrange
                 var library = new LibraryService(context);
-                library.AddBook(new Book { Id = 1, Title = "War and Piece" });
-                library.AddBook(new Book { Id = 2, Title = "Cherry garden" });
+                library.IsBookAdded(new Book { Id = 1, Title = "War and Piece" });
+                library.IsBookAdded(new Book { Id = 2, Title = "Cherry garden" });
                 BooksComparer comparer = new BooksComparer();
 
                 // Act
