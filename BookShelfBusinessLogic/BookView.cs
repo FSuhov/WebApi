@@ -7,7 +7,7 @@ namespace BookShelfBusinessLogic
     /// Represents an entity for user-friendly representation of specific book
     /// </summary>
     public class BookView
-    {
+    {        
         /// <summary>
         /// Initializes new instance of BookView class
         /// </summary>
@@ -17,8 +17,8 @@ namespace BookShelfBusinessLogic
         {
             this.Id = book.Id;
             this.Title = book.Title;
-            Authors = new List<string>();
-            Genres = new List<string>();
+            this.Authors = new List<string>();
+            this.Genres = new List<string>();
 
             foreach (BookAuthor item in context.BookAuthor)
             {
