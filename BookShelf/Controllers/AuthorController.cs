@@ -10,7 +10,7 @@ namespace BookShelf.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController : ControllerBase
+    public class AuthorController : ControllerBase
     {
         /// <summary>
         /// An instance of business logic class LibraryService
@@ -18,32 +18,32 @@ namespace BookShelf.Controllers
         private LibraryService _service;
 
         /// <summary>
-        /// Initializes new instance of GenreController
+        /// Initializes new instance of AuthorController
         /// </summary>
         /// <param name="context"> An instance of Business Logic calss</param>
-        public GenreController(LibraryContext context)
+        public AuthorController(LibraryContext context)
         {
             _service = new LibraryService(context);
         }
 
-        /// <summary>
-        /// Handles GET request: .../api/genre/
+        // <summary>
+        /// Handles GET request: .../api/author/
         /// </summary>
-        /// <returns>Existing collection of Genres</returns>
+        /// <returns>Existing collection of Authors</returns>
         [HttpGet]
-        public ActionResult<List<Genre>> GetAll()
+        public ActionResult<List<Author>> GetAll()
         {
-            return _service.GetGenres().ToList();
+            return _service.GetAuthors().ToList();
         }
 
         /// <summary>
-        /// Handles GET request: .../api/genre/1
+        /// Handles GET request: .../api/author/1
         /// </summary>
-        /// <returns>The genre with the specified Id or NotFound</returns>
+        /// <returns>The authore with the specified Id or NotFound</returns>
         [HttpGet("{id}")]
-        public ActionResult<Genre> GetById(int id)
+        public ActionResult<Author> GetById(int id)
         {
-            var item = _service.GetGenreById(id);
+            var item = _service.GetAuthorById(id);
 
             if (item == null)
             {
@@ -54,37 +54,37 @@ namespace BookShelf.Controllers
         }
 
         /// <summary>
-        /// Handles POST request: .../api/genre/{instance of genre}
-        /// Adds new Genre to the collection.
+        /// Handles POST request: .../api/author/{instance of genre}
+        /// Adds new Author to the collection.
         /// </summary>
-        /// <param name="genre">An instance of genre to be added</param>
-        /// <returns> An added instance if added, BadRequest if such Genre already exists or not a valid Genre </returns>
+        /// <param name="author">An instance of author to be added</param>
+        /// <returns> An added instance if added, BadRequest if such Author already exists or not a valid Genre </returns>
         [HttpPost]
-        public IActionResult Add(Genre genre)
+        public IActionResult Add(Author author)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Not valid genre");
             }
 
-            if (!_service.AddGenre(genre))
+            if (!_service.AddAuthor(author))
             {
                 return BadRequest("Already exist");
             }
 
-            return Created("genre", genre);
+            return Created("author", author);
         }
 
         /// <summary>
-        /// Handles DELETE request: .../api/genre/1
-        /// Removes Genre with the specified Id from the collection
+        /// Handles DELETE request: .../api/author/1
+        /// Removes author with the specified Id.
         /// </summary>
-        /// <param name="id"> Id of genre to be removed </param>
+        /// <param name="id"> Id of author to be removed </param>
         /// <returns> NoContent if removed or NotFound </returns>
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (!_service.DeleteGenre(id))
+            if (!_service.DeleteAuthor(id))
             {
                 return NotFound();
             }

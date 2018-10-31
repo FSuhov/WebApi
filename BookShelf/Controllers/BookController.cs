@@ -1,30 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using BookShelfBusinessLogic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookShelf.Controllers
 {
+    /// <summary>
+    /// Class serving as controller for handling the requests related to Books
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class BookController : ControllerBase
     {
-        LibraryService _service;
+        /// <summary>
+        /// An instance of business logic class LibraryService
+        /// </summary>
+        private LibraryService _service;
 
+        /// <summary>
+        /// Initializes new instance of BookController
+        /// </summary>
+        /// <param name="context"> An instance Business Logic class</param>
         public BookController(LibraryContext context)
         {
             _service = new LibraryService(context);
         }
 
+        /// <summary>
+        /// Handles GET request: .../api/book/
+        /// </summary>
+        /// <returns>Existing collection of Books</returns>
         [HttpGet]
         public ActionResult<List<Book>> GetAll()
         {
             return _service.GetBooks().ToList();
         }
 
+        /// <summary>
+        /// Handles GET request: .../api/book/1
+        /// </summary>
+        /// <returns>The book with the specified Id or NotFound</returns>
         [HttpGet("{id}", Name = "GetBook")]
         public ActionResult<BookView> GetById(int id)
         {
@@ -36,6 +51,12 @@ namespace BookShelf.Controllers
             return item;
         }
 
+        /// <summary>
+        /// Handles PUT request: .../api/book/1 + {instance of book}
+        /// </summary>
+        /// <param name="id">Id of book to be updated </param>
+        /// <param name="book">A sample of book to copy the fields to updating one</param>
+        /// <returns> Ok if updated, BadRequest if not valid instance or NotFound </returns>
         [HttpPut("{id}")]
         public IActionResult Update(int id, Book book)
         {
@@ -51,6 +72,11 @@ namespace BookShelf.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Handles POST request: .../api/book/{instance of book}
+        /// </summary>
+        /// <param name="book"> Instance of book to be added to the collection </param>
+        /// <returns> Id of added Book and instance of that book, or BadRequest if model is not valid or if such book already exists </returns>
         [HttpPost]
         public IActionResult Add(Book book)
         {
@@ -67,6 +93,11 @@ namespace BookShelf.Controllers
             return CreatedAtRoute("GetBook", new { id = book.Id }, book);
         }
 
+        /// <summary>
+        /// Handles DELETE request: .../api/book/1
+        /// </summary>
+        /// <param name="id"> Id of book to be removed </param>
+        /// <returns> NoContent if removed or NotFound </returns>
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -79,7 +110,8 @@ namespace BookShelf.Controllers
         }
 
         /// <summary>
-        /// Adds Genre to Book
+        /// Handles PUT request: .../api/book/1/genre/1
+        /// Adds Genre to book.
         /// </summary>
         /// <param name="bookId">Id of book to be updated </param>
         /// <param name="genreId">Id of genre to be added </param>
@@ -96,7 +128,8 @@ namespace BookShelf.Controllers
         }
 
         /// <summary>
-        /// Removes Genre from Book
+        /// Handles PUT request: .../api/book/1/genre/1/remove
+        /// Removes Genre from specified book.
         /// </summary>
         /// <param name="bookId">Id of book to be updated </param>
         /// <param name="genreId">Id of genre to be removed </param>
@@ -113,7 +146,8 @@ namespace BookShelf.Controllers
         }
 
         /// <summary>
-        /// Adds Author to Book
+        /// Handles PUT request: .../api/book/1/author/1
+        /// Adds Author to Book.
         /// </summary>
         /// <param name="bookId">Id of book to be updated </param>
         /// <param name="authorId">Id of author to be added </param>
@@ -131,6 +165,7 @@ namespace BookShelf.Controllers
 
 
         /// <summary>
+        /// Handles PUT request: .../api/book/1/author/1/remove
         /// Removes Author from Book
         /// </summary>
         /// <param name="bookId">Id of book to be updated </param>

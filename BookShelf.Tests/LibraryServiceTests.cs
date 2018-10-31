@@ -21,7 +21,7 @@ namespace BookShelf.Tests
                 // Arrange
                 var library = new LibraryService(context);
                 library.AddBook(new Book { Id = 1, Title = "War and Piece" });
-                library.AddBook(new Book { Id = 2, Title = "Cherry garder" });
+                library.AddBook(new Book { Id = 2, Title = "Cherry garden" });
                 BooksComparer comparer = new BooksComparer();
 
                 // Act
@@ -41,7 +41,7 @@ namespace BookShelf.Tests
         {
             List<Book> books = new List<Book>();
             books.Add(new Book { Id = 1, Title = "War and Piece" });
-            books.Add(new Book { Id = 2, Title = "Cherry garder" });
+            books.Add(new Book { Id = 2, Title = "Cherry garden" });
             return books;
         }
 
