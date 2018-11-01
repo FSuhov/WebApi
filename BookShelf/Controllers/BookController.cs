@@ -48,6 +48,7 @@ namespace BookShelf.Controllers
             {
                 return NotFound();
             }
+
             return item;
         }
 
@@ -69,6 +70,7 @@ namespace BookShelf.Controllers
             {
                 return NotFound();
             }
+
             return Ok();
         }
 
@@ -90,7 +92,7 @@ namespace BookShelf.Controllers
                 return BadRequest("Already exist");
             }
 
-            return CreatedAtRoute("GetBook", new { id = book.Id }, book);
+            return Created("GetBook", book.Id);
         }
 
         /// <summary>

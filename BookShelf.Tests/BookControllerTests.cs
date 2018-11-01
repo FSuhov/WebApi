@@ -43,6 +43,67 @@ namespace BookShelf.Tests
             Assert.AreEqual(true, isCollectionsSame);
         }
 
+        [TestMethod]
+        [DataRow(1)]
+        [DataRow(2)]
+        public void GetByIdTest_ReturnsBook(int id)
+        {
+            // Arrange
+            BooksComparer comparer = new BooksComparer();
+            _controller = new BookController(_context);
+            BookView expectedBook = new BookView (sampleBooks[id - 1], _context);
+
+            // Act
+            BookView actualBook = _controller.GetById(id).Value;
+            bool isBookAsExpected = expectedBook.Id == actualBook.Id && expectedBook.Title == actualBook.Title;
+
+            // Assert
+            Assert.AreEqual(true, isBookAsExpected);
+        }
+
+        [TestMethod]
+        [DataRow(5)]
+        public void GetByIdTestWhenIdDoesNotExists_ReturnsNotFound(int id)
+        {
+            // Arrange
+            BooksComparer comparer = new BooksComparer();
+            _controller = new BookController(_context);
+            BookView expectedBook = null;
+
+            // Act
+            BookView actualBook = _controller.GetById(id).Value;            
+
+            // Assert
+            Assert.AreEqual(expectedBook, actualBook);
+        }
+
+        [TestMethod]
+        [DataRow(1)]
+        public void UpdateTest_WhenCalledWithValidId_ReturnsOK(int id)
+        {
+            // Arrange
+            _controller = new BookController(_context);
+            Book bookSample = new Book { Id = 1, Title = "War and Piece+" };
+
+            // Act
+            IActionResult result = _controller.Update(id, bookSample);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(OkResult));
+        }
+
+        [TestMethod]
+        public void AddTest_ReturnsCreatedActionResult()
+        {
+            // Arrange
+            _controller = new BookController(_context);
+
+            // Act
+            IActionResult result = _controller.Add(sampleBooks[2]);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(CreatedResult));
+        }
 
         class BooksComparer : IEqualityComparer<Book>
         {
