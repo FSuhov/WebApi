@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using BookShelfBusinessLogic;
 
 namespace BookShelf
 {
@@ -27,9 +28,26 @@ namespace BookShelf
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             var connection = @"Server=DESKTOP-PU90CNF;Database=WebApiLibrary;Trusted_Connection=True;ConnectRetryCount=0";
-            services.AddDbContext<BookShelfBusinessLogic.LibraryContext>(options => options.UseSqlServer(connection));
+
+            services.AddDbContext<ILibraryContext, LibraryContext>(options => options.UseSqlServer(connection));
+
+            services.AddScoped<ILibraryService, LibraryService>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
+                {
+                    Version = "v1",
+                    Title = "BookShelf",
+                    Description = "Level 4 task for softserve",
+                    TermsOfService = "Welcome everybody!",
+                    Contact = new Swashbuckle.AspNetCore.Swagger.Contact() { Name = "Alex Brylov", Email = "fsuf@ukr.net" }
+                });
+
+            });
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +64,11 @@ namespace BookShelf
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookLibrary V1");
+            });
         }
     }
 }

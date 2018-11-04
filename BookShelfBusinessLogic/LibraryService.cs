@@ -7,19 +7,23 @@ namespace BookShelfBusinessLogic
     /// Class containing all methods for data exchange with the database.
     /// Accepts context - either external DB or in memory.
     /// </summary>
-    public class LibraryService
+    public class LibraryService : ILibraryService
     {
         /// <summary>
         /// Context to be working with.
         /// Containes collections of type DbSet for all models.
         /// </summary>
-        private LibraryContext _db;
+        private ILibraryContext _db;
+
+        public LibraryService()
+        {
+        }
 
         /// <summary>
         /// Initializes new instance of LibraryService.
         /// </summary>
         /// <param name="context">A data context</param>
-        public LibraryService(LibraryContext context)
+        public LibraryService(ILibraryContext context)
         {
             _db = context;
         }

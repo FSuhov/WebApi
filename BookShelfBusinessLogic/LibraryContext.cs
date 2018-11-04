@@ -5,7 +5,7 @@ namespace BookShelfBusinessLogic
     /// <summary>
     /// Represents a data context for exchanging the data between user and database
     /// </summary>
-    public class LibraryContext : DbContext
+    public class LibraryContext : DbContext, ILibraryContext
     {
         /// <summary>
         /// Initializes new instance of LibraryContext
@@ -45,6 +45,6 @@ namespace BookShelfBusinessLogic
         /// <summary>
         /// Gets or sets the collection of BookGenre entries using EF models
         /// </summary>
-        public DbSet<BookGenre> BookGenre { get; set; }
+        public DbSet<BookGenre> BookGenre { get; set; }        
     }
 }

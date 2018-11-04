@@ -15,15 +15,15 @@ namespace BookShelf.Controllers
         /// <summary>
         /// An instance of business logic class LibraryService
         /// </summary>
-        private LibraryService _service;
+        private ILibraryService _service;
 
         /// <summary>
         /// Initializes new instance of BookController
         /// </summary>
         /// <param name="context"> An instance Business Logic class</param>
-        public BookController(LibraryContext context)
+        public BookController(ILibraryService service)
         {
-            _service = new LibraryService(context);
+            _service = service;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace BookShelf.Controllers
         }
 
         /// <summary>
-        /// Handles PUT request: .../api/book/1 + {instance of book}
+        /// Handles PUT request: .../api/book/1 + {instance of book - in Body}
         /// </summary>
         /// <param name="id">Id of book to be updated </param>
         /// <param name="book">A sample of book to copy the fields to updating one</param>

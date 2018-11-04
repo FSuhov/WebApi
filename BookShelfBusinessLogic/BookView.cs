@@ -13,7 +13,7 @@ namespace BookShelfBusinessLogic
         /// </summary>
         /// <param name="book"> Base book model </param>
         /// <param name="context"> Data context </param>
-        public BookView(Book book, LibraryContext context)
+        public BookView(Book book, ILibraryContext context)
         {
             this.Id = book.Id;
             this.Title = book.Title;

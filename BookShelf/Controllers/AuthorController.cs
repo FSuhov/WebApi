@@ -15,15 +15,15 @@ namespace BookShelf.Controllers
         /// <summary>
         /// An instance of business logic class LibraryService
         /// </summary>
-        private LibraryService _service;
+        private ILibraryService _service;
 
         /// <summary>
         /// Initializes new instance of AuthorController
         /// </summary>
         /// <param name="context"> An instance of Business Logic calss</param>
-        public AuthorController(LibraryContext context)
+        public AuthorController(ILibraryService service)
         {
-            _service = new LibraryService(context);
+            _service = service;
         }
 
         // <summary>
