@@ -7,6 +7,11 @@ namespace BookShelfBusinessLogic
     /// </summary>
     public class Genre
     {
+        public Genre()
+        {
+
+        }
+
         /// <summary>
         /// Gets or sets a Unique number to identify the Genre and store in the Database
         /// </summary>
