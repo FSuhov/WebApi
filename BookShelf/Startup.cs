@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using BookShelfBusinessLogic;
+using BookShelfBusinessLogic.Services;
 
 namespace BookShelf
 {
@@ -30,9 +31,11 @@ namespace BookShelf
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             var connection = @"Server=DESKTOP-PU90CNF;Database=WebApiLibrary;Trusted_Connection=True;ConnectRetryCount=0";
 
-            services.AddDbContext<ILibraryContext, LibraryContext>(options => options.UseSqlServer(connection));
-
-            services.AddScoped<ILibraryService, LibraryService>();
+            services.AddDbContext<IDataProvider, LibraryContext>(options => options.UseSqlServer(connection));
+            services.AddScoped<IGenreService, GenreService>();
+            services.AddScoped<IAuthorService, AuthorService>();
+            services.AddScoped<IBookService, BookService>();
+            //services.AddScoped<ILibraryService, LibraryService>();
 
             services.AddSwaggerGen(c =>
             {

@@ -1,48 +1,76 @@
 ﻿using BookShelfBusinessLogic;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
 namespace BookShelf.Tests
 {
-    public class LibraryTestingContext : DbContext, ILibraryContext
+    public class LibraryTestingContext : IDataProvider
     {
-        
-        public LibraryTestingContext()
-        {            
-        }
-        public LibraryTestingContext(DbContextOptions<LibraryContext> options) : base(options)
+        public virtual List<Genre> GenresList { get; set; }
+
+        public virtual List<Author> AuthorsList { get; set; }
+
+        public virtual List<Book> BooksList { get; set; }
+
+        public virtual List<BookGenre> BooksGenresList { get; set; }
+
+        public virtual List<BookAuthor> BooksAuthorsList { get; set; }
+
+        public void AddAuthor(Author author)
         {
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseInMemoryDatabase(databaseName: "Add_mockup_data_to_database");
-            
-            base.OnConfiguring(optionsBuilder);
+            AuthorsList.Add(author);           
         }
 
-        public DbSet<Author> Authors { get; set; }
-        public DbSet<Genre> Genres { get; set; }
-        public DbSet<Book> Books { get; set; }
-        public DbSet<BookAuthor> BookAuthor { get; set; }
-        public DbSet<BookGenre> BookGenre { get; set; }
-
-        //public List<Book> BookList { get => Books.ToList(); }
-        public List<Genre> GenreList
+        public void AddBook(Book book)
         {
-            get => Genres.ToList();
-            set
-            {                
-                foreach(Genre item in value)
-                {
-                    this.Add(item);
-                }
-                SaveChanges();
-            }
+            BooksList.Add(book);            
         }
-        //public List<Author> AuthorList { get => Authors.ToList(); }
+
+        public void AddBookAuthor(BookAuthor ba)
+        {
+            BooksAuthorsList.Add(ba);            
+        }
+
+        public void AddBookGenre(BookGenre bg)
+        {
+            BooksGenresList.Add(bg);            
+        }
+
+        public void AddGenre(Genre genre)
+        {
+            GenresList.Add(genre);            
+        }
+
+        public void DeleteAuthor(Author author)
+        {
+            AuthorsList.Remove(author);
+        }
+
+        public void DeleteBook(Book book)
+        {
+            BooksList.Remove(book);
+        }
+
+        public void DeleteBookAuthor(BookAuthor ba)
+        {
+            BooksAuthorsList.Remove(ba);
+        }
+
+        public void DeleteBookGenre(BookGenre bg)
+        {
+            BooksGenresList.Remove(bg);
+        }
+
+        public void DeleteGenre(Genre genre)
+        {
+            GenresList.Remove(genre);
+        }
+
+        public void Save()
+        {
+            return;
+        }
     }
 }

@@ -12,28 +12,28 @@ namespace BookShelfBusinessLogic
         /// Initializes new instance of BookView class
         /// </summary>
         /// <param name="book"> Base book model </param>
-        /// <param name="context"> Data context </param>
-        public BookView(Book book, ILibraryContext context)
+        /// <param name="data"> Data context </param>
+        public BookView(Book book, IDataProvider data)
         {
             this.Id = book.Id;
             this.Title = book.Title;
             this.Authors = new List<string>();
             this.Genres = new List<string>();
 
-            foreach (BookAuthor item in context.BookAuthor)
+            foreach (BookAuthor item in data.BooksAuthorsList)
             {
                 if (item.BookRefId == book.Id)
                 {
-                    Author author = context.Authors.First(a => a.Id == item.AuthorRefId);
+                    Author author = data.AuthorsList.First(a => a.Id == item.AuthorRefId);
                     this.Authors.Add(author.Name);
                 }
             }
 
-            foreach (BookGenre item in context.BookGenre)
+            foreach (BookGenre item in data.BooksGenresList)
             {
                 if (item.BookRefId == book.Id)
                 {
-                    Genre genre = context.Genres.First(g => g.Id == item.GenreRefId);
+                    Genre genre = data.GenresList.First(g => g.Id == item.GenreRefId);
                     this.Genres.Add(genre.Name);
                 }
             }

@@ -13,15 +13,15 @@ namespace BookShelf.Controllers
     public class GenreController : ControllerBase
     {
         /// <summary>
-        /// An instance of business logic class LibraryService
+        /// An instance of business logic class GenreService
         /// </summary>
-        private ILibraryService _service;
+        private IGenreService _service;
 
         /// <summary>
         /// Initializes new instance of GenreController
         /// </summary>
         /// <param name="context"> An instance of Business Logic calss</param>
-        public GenreController(ILibraryService service)
+        public GenreController(IGenreService service)
         {
             _service = service;
         }
@@ -33,7 +33,7 @@ namespace BookShelf.Controllers
         [HttpGet]
         public ActionResult<List<Genre>> GetAll()
         {
-            return _service.GetGenres().ToList();
+            return _service.GetAllGenres().ToList();
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace BookShelf.Controllers
                 return BadRequest("Not valid genre");
             }
 
-            if (!_service.AddGenre(genre))
+            if (!_service.AddNewGenre(genre))
             {
                 return BadRequest("Already exist");
             }
@@ -91,7 +91,7 @@ namespace BookShelf.Controllers
 
             return NoContent();
         }
-
+       
         /// <summary>
         /// Handles GET request: .../api/genre/1/books
         /// Gets all books by specified genre
@@ -109,6 +109,6 @@ namespace BookShelf.Controllers
             }
 
             return books;
-        }
+        }        
     }
 }

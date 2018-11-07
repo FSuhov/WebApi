@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BookShelfBusinessLogic;
+using BookShelfBusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookShelf.Controllers
@@ -13,15 +14,15 @@ namespace BookShelf.Controllers
     public class AuthorController : ControllerBase
     {
         /// <summary>
-        /// An instance of business logic class LibraryService
+        /// An instance of business logic class AuthorService
         /// </summary>
-        private ILibraryService _service;
+        private IAuthorService _service;
 
         /// <summary>
         /// Initializes new instance of AuthorController
         /// </summary>
         /// <param name="context"> An instance of Business Logic calss</param>
-        public AuthorController(ILibraryService service)
+        public AuthorController(IAuthorService service)
         {
             _service = service;
         }
@@ -33,7 +34,7 @@ namespace BookShelf.Controllers
         [HttpGet]
         public ActionResult<List<Author>> GetAll()
         {
-            return _service.GetAuthors().ToList();
+            return _service.GetAllAuthors().ToList();
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace BookShelf.Controllers
                 return BadRequest("Not valid genre");
             }
 
-            if (!_service.AddAuthor(author))
+            if (!_service.AddNewAuthor(author))
             {
                 return BadRequest("Already exist");
             }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BookShelfBusinessLogic;
+using BookShelfBusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookShelf.Controllers
@@ -13,15 +14,15 @@ namespace BookShelf.Controllers
     public class BookController : ControllerBase
     {
         /// <summary>
-        /// An instance of business logic class LibraryService
+        /// An instance of business logic class BookService
         /// </summary>
-        private ILibraryService _service;
+        private IBookService _service;
 
         /// <summary>
         /// Initializes new instance of BookController
         /// </summary>
         /// <param name="context"> An instance Business Logic class</param>
-        public BookController(ILibraryService service)
+        public BookController(IBookService service)
         {
             _service = service;
         }
@@ -66,7 +67,7 @@ namespace BookShelf.Controllers
                 return BadRequest("Not valid book");
             }
 
-            if (!_service.IsBookUpdated(id, book))
+            if (!_service.UpdateBook(id, book))
             {
                 return NotFound();
             }
@@ -87,7 +88,7 @@ namespace BookShelf.Controllers
                 return BadRequest("Not valid book");
             }
 
-            if (!_service.IsBookAdded(book))
+            if (!_service.AddBook(book))
             {
                 return BadRequest("Already exist");
             }
@@ -103,7 +104,7 @@ namespace BookShelf.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (!_service.IsBookDeleted(id))
+            if (!_service.DeleteBook(id))
             {
                 return NotFound();
             }
@@ -121,7 +122,7 @@ namespace BookShelf.Controllers
         [HttpPut("{bookId}/genre/{genreId}")]
         public IActionResult AddGenreToBook(int bookId, int genreId)
         {
-            if (!_service.IsGenreToBookAdded(bookId, genreId))
+            if (!_service.AddGenreToBook(bookId, genreId))
             {
                 return BadRequest("Invalid data");
             }
@@ -139,7 +140,7 @@ namespace BookShelf.Controllers
         [HttpPut("{bookId}/genre/{genreId}/remove")]
         public IActionResult RemoveGenreFromBook(int bookId, int genreId)
         {
-            if (!_service.IsGenreFromBookRemoved(bookId, genreId))
+            if (!_service.RemoveGenreFromBook(bookId, genreId))
             {
                 return NotFound();
             }
@@ -157,14 +158,13 @@ namespace BookShelf.Controllers
         [HttpPut("{bookId}/author/{authorId}")]
         public IActionResult AddAuthorToBook(int bookId, int authorId)
         {
-            if (!_service.IsAuthorToBookAdded(bookId, authorId))
+            if (!_service.AddAuthorToBook(bookId, authorId))
             {
                 return BadRequest("Invalid data");
             }
 
             return NoContent();
         }
-
 
         /// <summary>
         /// Handles PUT request: .../api/book/1/author/1/remove
@@ -176,7 +176,7 @@ namespace BookShelf.Controllers
         [HttpPut("{bookId}/author/{genreId}/remove")]
         public IActionResult RemoveAuthorFromBook(int bookId, int authorId)
         {
-            if (!_service.IsAuthorFromBookRemoved(bookId, authorId))
+            if (!_service.RemoveAuthorFromBook(bookId, authorId))
             {
                 return NotFound();
             }

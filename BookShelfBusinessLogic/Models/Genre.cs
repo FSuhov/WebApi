@@ -9,7 +9,6 @@ namespace BookShelfBusinessLogic
     {
         public Genre()
         {
-
         }
 
         /// <summary>
