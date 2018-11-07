@@ -32,6 +32,7 @@ namespace BookShelf
             //    opt.UseInMemoryDatabase("BookList"));
 
             services.AddSingleton<ILibrary, Library>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

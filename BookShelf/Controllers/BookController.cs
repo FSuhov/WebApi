@@ -78,8 +78,6 @@ namespace BookShelf.Controllers
                 return NotFound();
             }
             else _library.DeleteBook(id);
-
-            return NoContent();
         }
     }
 }
