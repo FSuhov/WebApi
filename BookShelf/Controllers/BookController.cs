@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookShelf.Models;
-using BookShelf.BookService;
+using BookShelf.LibraryService;
 
 namespace BookShelf.Controllers
 {
@@ -10,23 +10,23 @@ namespace BookShelf.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private IBook _books;
+        private readonly ILibrary _library;
 
-        public BookController(IBook booklist)
+        public BookController(ILibrary library)
         {
-            _books = booklist;
+            this._library = library;
         }
 
         [HttpGet]
         public ActionResult<List<Book>> GetAll()
         {
-            return _books.getAll();
+            return _library.GetBooks();
         }
 
         [HttpGet("{id}", Name = "GetBook")]
         public ActionResult<Book> GetById(int id)
         {
-            var item = _books.getOne(id);
+            var item = _library.GetBookById(id);
             if(item == null)
             {
                 return NotFound();
@@ -35,28 +35,49 @@ namespace BookShelf.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Book book)
+        public IActionResult Create(Book item)
         {
-            int id = _books.Add(book);
+            _library.AddBook(item);
 
-            return CreatedAtRoute("GetBook", new { id }, book);
+            return CreatedAtRoute("GetBook", new { id = item.Id }, item);
+        }
+
+        [HttpPut("{bookId}/{authorId}")]
+        public IActionResult Update(int bookId, int authorId)
+        {
+            var book = _library.GetBookById(bookId);
+            var author = _library.GetAuthorById(authorId);
+            if (book == null || author == null)
+            {
+                return NotFound();
+            }
+            else _library.UpdateBook(bookId, authorId);
+
+            return NoContent();
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, Book item)
         {
-            _books.UpdateBook(id, item);
-           
+            var book = _library.GetBookById(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            else _library.UpdateBook(id, item);
+
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            
-            _books.Delete(id);
-
-            return NoContent();
+            var book = _library.GetBookById(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            else _library.DeleteBook(id);
         }
     }
 }
