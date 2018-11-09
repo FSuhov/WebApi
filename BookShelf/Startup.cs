@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using BookShelfBusinessLogic;
 using BookShelfBusinessLogic.Services;
+using AutoMapper;
 
 namespace BookShelf
 {
@@ -28,6 +29,7 @@ namespace BookShelf
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             var connection = @"Server=DESKTOP-PU90CNF;Database=WebApiLibrary;Trusted_Connection=True;ConnectRetryCount=0";
 
