@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Genre } from './genre';
 var DataService = /** @class */ (function () {
     function DataService(http) {
         this.http = http;
@@ -18,8 +17,8 @@ var DataService = /** @class */ (function () {
     DataService.prototype.getGenres = function () {
         return this.http.get(this.url);
     };
-    DataService.prototype.createGenre = function (book) {
-        return this.http.post(this.url, Genre);
+    DataService.prototype.addGenre = function (genre) {
+        return this.http.post(this.url, genre, { observe: 'response' });
     };
     DataService.prototype.updateGenre = function (genre) {
         return this.http.put(this.url + '/' + genre.id, genre);

@@ -14,8 +14,8 @@ export class DataService {
         return this.http.get(this.url);
     }
 
-    createGenre(book: Genre) {
-        return this.http.post(this.url, Genre);
+    addGenre(genre: Genre) {
+        return this.http.post(this.url, genre, { observe: 'response' });
     }
     updateGenre(genre: Genre) {
 

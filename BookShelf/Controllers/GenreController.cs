@@ -60,7 +60,7 @@ namespace BookShelf.Controllers
         /// <param name="genre">An instance of genre to be added</param>
         /// <returns> An added instance if added, BadRequest if such Genre already exists or not a valid Genre </returns>
         [HttpPost]
-        public IActionResult Add(Genre genre)
+        public IActionResult Add([FromBody]Genre genre)
         {
             if (!ModelState.IsValid)
             {

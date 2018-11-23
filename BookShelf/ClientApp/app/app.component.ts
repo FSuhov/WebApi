@@ -2,6 +2,8 @@
 import { DataService } from './data.service';
 import { Genre } from './genre';
 
+import { HttpResponse } from '@angular/common/http';
+
 @Component({
     selector: 'app',
     templateUrl: './app.component.html',
@@ -26,8 +28,11 @@ export class AppComponent implements OnInit {
     // сохранение данных
     save() {
         if (this.genre.id == null) {
-            this.dataService.createGenre(this.genre)
-                .subscribe((data: Genre) => this.genres.push(data));
+            this.dataService.addGenre(this.genre)
+                .subscribe((data: HttpResponse<Genre>) => {
+                    console.log(data);
+                    this.genres.push(data.body);
+                });
         } else {
             this.dataService.updateGenre(this.genre)
                 .subscribe(data => this.loadGenres());

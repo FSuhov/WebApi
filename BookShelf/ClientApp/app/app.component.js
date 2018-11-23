@@ -29,8 +29,11 @@ var AppComponent = /** @class */ (function () {
     AppComponent.prototype.save = function () {
         var _this = this;
         if (this.genre.id == null) {
-            this.dataService.createGenre(this.genre)
-                .subscribe(function (data) { return _this.genres.push(data); });
+            this.dataService.addGenre(this.genre)
+                .subscribe(function (data) {
+                console.log(data);
+                _this.genres.push(data.body);
+            });
         }
         else {
             this.dataService.updateGenre(this.genre)
