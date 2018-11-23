@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using BookShelfBusinessLogic;
 using BookShelfBusinessLogic.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 
 namespace BookShelf
 {
@@ -39,18 +33,18 @@ namespace BookShelf
             services.AddScoped<IBookService, BookService>();
             //services.AddScoped<ILibraryService, LibraryService>();
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
-                {
-                    Version = "v1",
-                    Title = "BookShelf",
-                    Description = "Level 4 task for softserve",
-                    TermsOfService = "Welcome everybody!",
-                    Contact = new Swashbuckle.AspNetCore.Swagger.Contact() { Name = "Alex Brylov", Email = "fsuf@ukr.net" }
-                });
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
+            //    {
+            //        Version = "v1",
+            //        Title = "BookShelf",
+            //        Description = "Level 4 task for softserve",
+            //        TermsOfService = "Welcome everybody!",
+            //        Contact = new Swashbuckle.AspNetCore.Swagger.Contact() { Name = "Alex Brylov", Email = "fsuf@ukr.net" }
+            //    });
 
-            });
+            //});
 
             
         }
@@ -61,19 +55,27 @@ namespace BookShelf
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                {
+                    HotModuleReplacement = true
+                });
             }
             else
             {
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
+            //app.UseHttpsRedirection();
             app.UseMvc();
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookLibrary V1");
-            });
+            //app.UseSwagger();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookLibrary V1");
+            //});
         }
     }
 }
