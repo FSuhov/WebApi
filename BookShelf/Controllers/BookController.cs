@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using BookShelfBL;
+using System.Linq;
+using BookShelfBusinessLogic;
+using BookShelfBusinessLogic.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookShelf.Controllers
 {
@@ -12,17 +14,17 @@ namespace BookShelf.Controllers
     public class BookController : ControllerBase
     {
         /// <summary>
-        /// An instance of business logic class
+        /// An instance of business logic class BookService
         /// </summary>
-        private readonly ILibrary _library;
+        private IBookService _service;
 
-        // <summary>
+        /// <summary>
         /// Initializes new instance of BookController
         /// </summary>
         /// <param name="context"> An instance Business Logic class</param>
-        public BookController(ILibrary library)
+        public BookController(IBookService service)
         {
-            this._library = library;
+            _service = service;
         }
 
         /// <summary>
@@ -32,7 +34,7 @@ namespace BookShelf.Controllers
         [HttpGet]
         public ActionResult<List<Book>> GetAll()
         {
-            return _library.GetBooks();
+            return _service.GetBooks().ToList();
         }
 
         /// <summary>
@@ -40,54 +42,71 @@ namespace BookShelf.Controllers
         /// </summary>
         /// <returns>The book with the specified Id or NotFound</returns>
         [HttpGet("{id}", Name = "GetBook")]
-        public ActionResult<Book> GetById(int id)
+        public ActionResult<BookView> GetById(int id)
         {
-            var item = _library.GetBookById(id);
+            var item = _service.GetBookById(id);
             if (item == null)
             {
                 return NotFound();
             }
+
             return item;
         }
 
         /// <summary>
-        /// Handles POST request: .../api/book/{instance of book}
+        /// Handles PUT request: .../api/book/1 + {instance of book - in Body}
         /// </summary>
-        /// <param name="book"> Instance of book to be added to the collection </param>
-        /// <returns> Id of added Book and instance of that book, or BadRequest if model is not valid </returns>
-        [HttpPost]
-        public IActionResult Create(Book item)
+        /// <param name="id">Id of book to be updated </param>
+        /// <param name="book">A sample of book to copy the fields to updating one</param>
+        /// <returns> Ok if updated, BadRequest if not valid instance or NotFound </returns>
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, Book book)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Not valid book");
             }
 
-            _library.AddBook(item);
-
-            return CreatedAtRoute("GetBook", new { id = item.Id }, item);
-        }
-
-        /// <summary>
-        /// Handles PUT request: .../api/book/1/author/1
-        /// Adds Author to Book.
-        /// </summary>
-        /// <param name="bookId">Id of book to be updated </param>
-        /// <param name="authorId">Id of author to be added </param>
-        /// <returns> Request result - no content or NotFound</returns>
-        [HttpPut("{bookId}/author/{authorId}")]
-        public IActionResult Update(int bookId, int authorId)
-        {
-            var book = _library.GetBookById(bookId);
-            var author = _library.GetAuthorById(authorId);
-
-            if (book == null || author == null)
+            if (!_service.UpdateBook(id, book))
             {
                 return NotFound();
             }
-            else
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Handles POST request: .../api/book/{instance of book}
+        /// </summary>
+        /// <param name="book"> Instance of book to be added to the collection </param>
+        /// <returns> Id of added Book and instance of that book, or BadRequest if model is not valid or if such book already exists </returns>
+        [HttpPost]
+        public IActionResult Add(Book book)
+        {
+            if (!ModelState.IsValid)
             {
-                _library.AddAuthorToBook(bookId, authorId);
+                return BadRequest("Not valid book");
+            }
+
+            if (!_service.AddBook(book))
+            {
+                return BadRequest("Already exist");
+            }
+
+            return Created("GetBook", book.Id);
+        }
+
+        /// <summary>
+        /// Handles DELETE request: .../api/book/1
+        /// </summary>
+        /// <param name="id"> Id of book to be removed </param>
+        /// <returns> NoContent if removed or NotFound </returns>
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            if (!_service.DeleteBook(id))
+            {
+                return NotFound();
             }
 
             return NoContent();
@@ -99,100 +118,70 @@ namespace BookShelf.Controllers
         /// </summary>
         /// <param name="bookId">Id of book to be updated </param>
         /// <param name="genreId">Id of genre to be added </param>
-        /// <returns> Request result - no content or NotFound</returns>
+        /// <returns> Request result - no content or bad request</returns>
         [HttpPut("{bookId}/genre/{genreId}")]
-        public IActionResult UpdateGenre(int bookId, int genreId)
+        public IActionResult AddGenreToBook(int bookId, int genreId)
         {
-            var book = _library.GetBookById(bookId);
-            var genre = _library.GetAuthorById(genreId);
-
-            if (book == null || genre == null)
+            if (!_service.AddGenreToBook(bookId, genreId))
             {
-                return NotFound();
-            }
-            else
-            {
-                _library.AddGenreToBook(bookId, genreId);
+                return BadRequest("Invalid data");
             }
 
             return NoContent();
         }
 
         /// <summary>
-        /// Handles PUT request: .../api/book/1 + {instance of book}
+        /// Handles PUT request: .../api/book/1/genre/1/remove
+        /// Removes Genre from specified book.
         /// </summary>
-        /// <param name="id">Id of book to be updated </param>
-        /// <param name="book">A sample of book to copy the fields to updating one</param>
-        /// <returns> NoContent if updated, NotFound if such book does not exist in data source </returns>
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, Book item)
+        /// <param name="bookId">Id of book to be updated </param>
+        /// <param name="genreId">Id of genre to be removed </param>
+        /// <returns> Request result - no content or not found</returns>
+        [HttpPut("{bookId}/genre/{genreId}/remove")]
+        public IActionResult RemoveGenreFromBook(int bookId, int genreId)
         {
-            var book = _library.GetBookById(id);
-
-            if (book == null)
+            if (!_service.RemoveGenreFromBook(bookId, genreId))
             {
                 return NotFound();
-            }
-            else
-            {
-                _library.UpdateBook(id, item);
             }
 
             return NoContent();
         }
 
         /// <summary>
-        /// Handles DELETE request: .../api/book/1
+        /// Handles PUT request: .../api/book/1/author/1
+        /// Adds Author to Book.
         /// </summary>
-        /// <param name="id"> Id of book to be removed </param>
-        /// <returns> NoContent if removed or NotFound </returns>
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        /// <param name="bookId">Id of book to be updated </param>
+        /// <param name="authorId">Id of author to be added </param>
+        /// <returns> Request result - no content or bad request</returns>
+        [HttpPut("{bookId}/author/{authorId}")]
+        public IActionResult AddAuthorToBook(int bookId, int authorId)
         {
-            var book = _library.GetBookById(id);
-            if (book == null)
+            if (!_service.AddAuthorToBook(bookId, authorId))
             {
-                return NotFound();
+                return BadRequest("Invalid data");
             }
-            else _library.DeleteBook(id);
+
+            return NoContent();
         }
 
         /// <summary>
-        /// Handles GET request: .../api/book/1/genre
-        /// Gets all books by specified genre
+        /// Handles PUT request: .../api/book/1/author/1/remove
+        /// Removes Author from Book
         /// </summary>
-        /// <param name="id">Id of genre</param>
-        /// <returns>Collection of Books or NotFOund</returns>
-        [HttpGet("{genreId}/genre", Name = "BooksByGenre")]
-        public ActionResult<List<Book>> GetByGenre(int genreId)
+        /// <param name="bookId">Id of book to be updated </param>
+        /// <param name="authorId">Id of author to be removed </param>
+        /// <returns> Request result - no content or not found</returns>
+        [HttpPut("{bookId}/author/{genreId}/remove")]
+        public IActionResult RemoveAuthorFromBook(int bookId, int authorId)
         {
-            var items = _library.GetBooksByGenre(genreId);
-
-            if (items.Count == 0)
+            if (!_service.RemoveAuthorFromBook(bookId, authorId))
             {
                 return NotFound();
             }
 
-            return items;
-        }
-
-        /// <summary>
-        /// Handles GET request: .../api/book/1/author
-        /// Gets all books by specified author
-        /// </summary>
-        /// <param name="id">Id of author</param>
-        /// <returns>Collection of Books or NotFOund</returns>
-        [HttpGet("{authorId}/author", Name = "BooksByAuthor")]
-        public ActionResult<List<Book>> GetByAuthor(int authorId)
-        {
-            var items = _library.GetBooksByAuthor(authorId);
-
-            if (items.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return items;
+            return NoContent();
         }
     }
 }

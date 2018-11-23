@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using BookShelfBL;
+using BookShelfBusinessLogic;
+using BookShelfBusinessLogic.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookShelf.Controllers
 {
@@ -13,17 +14,17 @@ namespace BookShelf.Controllers
     public class AuthorController : ControllerBase
     {
         /// <summary>
-        /// An instance of business logic class
+        /// An instance of business logic class AuthorService
         /// </summary>
-        private readonly ILibrary _library;
+        private IAuthorService _service;
 
         /// <summary>
         /// Initializes new instance of AuthorController
         /// </summary>
         /// <param name="context"> An instance of Business Logic calss</param>
-        public AuthorController(ILibrary library)
+        public AuthorController(IAuthorService service)
         {
-            this._library = library;
+            _service = service;
         }
 
         // <summary>
@@ -33,55 +34,46 @@ namespace BookShelf.Controllers
         [HttpGet]
         public ActionResult<List<Author>> GetAll()
         {
-            return _library.GetAuthors();
+            return _service.GetAllAuthors().ToList();
         }
 
         /// <summary>
         /// Handles GET request: .../api/author/1
         /// </summary>
         /// <returns>The authore with the specified Id or NotFound</returns>
-        [HttpGet("{id}", Name = "GetAuthor")]
+        [HttpGet("{id}")]
         public ActionResult<Author> GetById(int id)
         {
-            var item = _library.GetAuthorById(id);
+            var item = _service.GetAuthorById(id);
+
             if (item == null)
             {
                 return NotFound();
             }
+
             return item;
         }
 
         /// <summary>
-        /// Handles POST request: .../api/author/{instance of author}
+        /// Handles POST request: .../api/author/{instance of genre}
         /// Adds new Author to the collection.
         /// </summary>
         /// <param name="author">An instance of author to be added</param>
-        /// <returns> An added instance if added, BadRequest if such Author already exists or not a valid Author </returns>
+        /// <returns> An added instance if added, BadRequest if such Author already exists or not a valid Genre </returns>
         [HttpPost]
-        public IActionResult Create(Author item)
+        public IActionResult Add(Author author)
         {
-            _library.AddAuthor(item);
-
-            return CreatedAtRoute("GetAuthor", new { id = item.Id }, item);
-        }
-
-        /// <summary>
-        /// Handles PUT request: .../api/1+{auhtor}
-        /// </summary>
-        /// <param name="id">Id of author to look for</param>
-        /// <param name="item">Sample of author to be copied</param>
-        /// <returns></returns>
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, Author item)
-        {
-            var author = _library.GetAuthorById(id);
-            if (author == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest("Not valid genre");
             }
-            else _library.UpdateAuthor(id, item);
 
-            return NoContent();
+            if (!_service.AddNewAuthor(author))
+            {
+                return BadRequest("Already exist");
+            }
+
+            return Created("author", author);
         }
 
         /// <summary>
@@ -93,14 +85,31 @@ namespace BookShelf.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var author = _library.GetAuthorById(id);
-            if (author == null)
+            if (!_service.DeleteAuthor(id))
             {
                 return NotFound();
             }
-            else _library.DeleteAuthor(id);
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Handles GET request: .../api/author/1/books
+        /// Gets all books by specified author
+        /// </summary>
+        /// <param name="id">Id of author</param>
+        /// <returns>Collection of Books </returns>
+        [HttpGet("{id}/books")]
+        public ActionResult<List<Book>> GetBooksByAuthor(int id)
+        {
+            var books = _service.GetBooksByAuthor(id).ToList();
+
+            if (books == null)
+            {
+                return NotFound();
+            }
+
+            return books;
         }
     }
 }

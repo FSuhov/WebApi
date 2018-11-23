@@ -1,9 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using BookShelfBL;
-using Microsoft.AspNetCore.Http;
+using BookShelfBusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookShelf.Controllers
@@ -16,17 +13,17 @@ namespace BookShelf.Controllers
     public class GenreController : ControllerBase
     {
         /// <summary>
-        /// An instance of business logic class
+        /// An instance of business logic class GenreService
         /// </summary>
-        private readonly ILibrary _library;
+        private IGenreService _service;
 
         /// <summary>
         /// Initializes new instance of GenreController
         /// </summary>
-        /// <param name="context"> An instance of Business Logic class</param>
-        public GenreController(ILibrary library)
+        /// <param name="context"> An instance of Business Logic calss</param>
+        public GenreController(IGenreService service)
         {
-            this._library = library;
+            _service = service;
         }
 
         /// <summary>
@@ -36,21 +33,23 @@ namespace BookShelf.Controllers
         [HttpGet]
         public ActionResult<List<Genre>> GetAll()
         {
-            return _library.GetGenres();
+            return _service.GetAllGenres().ToList();
         }
 
         /// <summary>
         /// Handles GET request: .../api/genre/1
         /// </summary>
         /// <returns>The genre with the specified Id or NotFound</returns>
-        [HttpGet("{id}", Name = "GetGenre")]
+        [HttpGet("{id}")]
         public ActionResult<Genre> GetById(int id)
         {
-            var item = _library.GetGenreById(id);
+            var item = _service.GetGenreById(id);
+
             if (item == null)
             {
                 return NotFound();
             }
+
             return item;
         }
 
@@ -59,13 +58,21 @@ namespace BookShelf.Controllers
         /// Adds new Genre to the collection.
         /// </summary>
         /// <param name="genre">An instance of genre to be added</param>
-        /// <returns> An added instance id </returns>
+        /// <returns> An added instance if added, BadRequest if such Genre already exists or not a valid Genre </returns>
         [HttpPost]
-        public IActionResult Create(Genre item)
+        public IActionResult Add([FromBody]Genre genre)
         {
-            _library.AddGenre(item);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Not valid genre");
+            }
 
-            return CreatedAtRoute("GetGenre", new { id = item.Id }, item);
+            if (!_service.AddNewGenre(genre))
+            {
+                return BadRequest("Already exist");
+            }
+
+            return Created("genre", genre);
         }
 
         /// <summary>
@@ -73,26 +80,35 @@ namespace BookShelf.Controllers
         /// Removes Genre with the specified Id from the collection
         /// </summary>
         /// <param name="id"> Id of genre to be removed </param>
-        /// <returns> NoContent if removed, NotFound or BadRequest </returns>
+        /// <returns> NoContent if removed or NotFound </returns>
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var genre = _library.GetGenreById(id);
-
-            if (genre == null)
+            if (!_service.DeleteGenre(id))
             {
                 return NotFound();
-            }
-            else
-            {
-                var result = _library.DeleteGenre(id);
-                if (!result)
-                {
-                    return BadRequest();
-                }
             }
 
             return NoContent();
         }
+       
+        /// <summary>
+        /// Handles GET request: .../api/genre/1/books
+        /// Gets all books by specified genre
+        /// </summary>
+        /// <param name="id">Id of genre</param>
+        /// <returns>Collection of Books </returns>
+        [HttpGet("{id}/books")]
+        public ActionResult<List<Book>> GetBooksByGenre(int id)
+        {
+            var books = _service.GetBooksByGenre(id).ToList();
+
+            if (books == null)
+            {
+                return NotFound();
+            }
+
+            return books;
+        }        
     }
 }
