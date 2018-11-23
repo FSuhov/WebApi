@@ -40,4 +40,8 @@
     <TypeScriptCompile Include="ClientApp\polyfills.ts" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookShelfBL\BookShelfBL.csproj" />
+  </ItemGroup>
+
 </Project>

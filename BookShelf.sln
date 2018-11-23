@@ -8,6 +8,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookShelfBusinessLogic", "BookShelfBusinessLogic\BookShelfBusinessLogic.csproj", "{0F7674CE-587C-4A69-B9F0-ED415CD1F279}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShelf.Tests", "BookShelf.Tests\BookShelf.Tests.csproj", "{3002EAF2-C5BA-462D-BAB8-E7AFFE555284}"
+
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
