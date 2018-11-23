@@ -6,15 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\app\app.component.ts" />
-    <None Remove="ClientApp\app\app.module.ts" />
-    <None Remove="ClientApp\app\data.service.ts" />
-    <None Remove="ClientApp\app\genre.ts" />
-    <None Remove="ClientApp\main.ts" />
-    <None Remove="ClientApp\polyfills.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -32,12 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\app\app.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\app.module.ts" />
-    <TypeScriptCompile Include="ClientApp\app\genre.ts" />
-    <TypeScriptCompile Include="ClientApp\app\data.service.ts" />
-    <TypeScriptCompile Include="ClientApp\main.ts" />
-    <TypeScriptCompile Include="ClientApp\polyfills.ts" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
