@@ -8,7 +8,7 @@ namespace BookShelf.Controllers
     /// <summary>
     /// Class serving as controller for handling the requests related to Genres
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/genre")]
     [ApiController]
     public class GenreController : ControllerBase
     {

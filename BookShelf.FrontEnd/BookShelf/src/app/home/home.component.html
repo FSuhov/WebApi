@@ -1,0 +1,12 @@
+<p>
+  home works!
+</p>
+<div class="row">
+  <div class="col-md-4">
+    <app-add-or-update-genre (genreCreated)="createOrUpdateGenre($event)" [genreInfo]="currentGenre"></app-add-or-update-genre>
+  </div>
+  <div class="col-md-8">
+    <!--<app-genre-component [genreData]="genreData"></app-genre-component>-->
+    <app-genre-component [genreData]="genreData" (editClicked)="editClicked($event)" (newClicked)="newClicked()" (recordDeleted)="deleteClicked($event)"></app-genre-component>
+  </div>
+</div>

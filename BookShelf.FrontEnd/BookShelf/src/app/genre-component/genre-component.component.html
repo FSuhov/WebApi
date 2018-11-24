@@ -1,0 +1,22 @@
+<h2>My results</h2>
+<button type="button" class="btn btn-primary" (click)="newRecord()">New</button>
+
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th>ID</th>
+      <th>GENRE NAME</th>
+      <th>MANAGE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let genreInfo of genreData">
+      <td>{{ genreInfo.id  }}</td>
+      <td>{{ genreInfo.name  }}</td>
+      <td>
+        <a href="#" (click)="editRecord(genreInfo)">Edit</a>
+        <a href="#" (click)="deleteRecord(genreInfo)">Delete</a>
+      </td>
+    </tr>
+  </tbody>
+</table>

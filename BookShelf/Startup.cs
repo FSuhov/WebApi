@@ -8,6 +8,7 @@ using BookShelfBusinessLogic;
 using BookShelfBusinessLogic.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Newtonsoft.Json.Serialization;
 
 namespace BookShelf
 {
@@ -24,7 +25,15 @@ namespace BookShelf
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ContractResolver
+                        = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
+                });
             var connection = @"Server=DESKTOP-PU90CNF;Database=WebApiLibrary;Trusted_Connection=True;ConnectRetryCount=0";
 
             services.AddDbContext<IDataProvider, LibraryContext>(options => options.UseSqlServer(connection));
@@ -32,20 +41,27 @@ namespace BookShelf
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IBookService, BookService>();
 
-            services.AddSwaggerGen(c =>
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
+            //    {
+            //        Version = "v1",
+            //        Title = "BookShelf",
+            //        Description = "Level 4 task for softserve",
+            //        TermsOfService = "Welcome everybody!",
+            //        Contact = new Swashbuckle.AspNetCore.Swagger.Contact() { Name = "Alex Brylov", Email = "fsuf@ukr.net" }
+            //    });
+
+            //});
+
+            services.AddCors(options =>
             {
-                c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
-                {
-                    Version = "v1",
-                    Title = "BookShelf",
-                    Description = "Level 4 task for softserve",
-                    TermsOfService = "Welcome everybody!",
-                    Contact = new Swashbuckle.AspNetCore.Swagger.Contact() { Name = "Alex Brylov", Email = "fsuf@ukr.net" }
-                });
-
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
             });
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,14 +78,15 @@ namespace BookShelf
 
             //app.UseDefaultFiles();
             //app.UseStaticFiles();
+            app.UseCors("CorsPolicy");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookLibrary V1");
-            });
+            //app.UseSwagger();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookLibrary V1");
+            //});
         }
     }
 }

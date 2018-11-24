@@ -1,0 +1,21 @@
+
+
+<h2 *ngIf="!genreInfo || genreInfo.id === undefined">Add record</h2>
+<h2 *ngIf="genreInfo && genreInfo.id !== undefined">Update record (ID: )</h2>
+
+<div>
+
+  <form>
+    <div class="form-group">
+      <label for="date-input">GENRE ID:</label>
+      <input type="number" id="id-input" name = "id-input" [(ngModel)]="genreInfo.id" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label for="distance-input">GENRE NAME</label>
+      <input type="text" id="name-input" name = "name-input" [(ngModel)]="genreInfo.name" class="form-control" />
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="addOrUpdateGenreRecord($event);">{{ buttonText }}</button>
+
+  </form>
+</div>
