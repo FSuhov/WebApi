@@ -1,0 +1,26 @@
+<h2>Authors</h2>
+<button type="button" class="btn btn-primary" (click)="newRecord()">New</button>
+
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th>ID</th>
+      <th>AUTHOR NAME</th>
+      <th>MANAGE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let authorInfo of authorData">
+      <td>{{ authorInfo.id  }}</td>
+      <td>{{ authorInfo.name  }}</td>
+      <td>
+        <a href="#" (click)="editRecord(authorInfo)">Edit</a>
+        <a href="#" (click)="deleteRecord(authorInfo)">Delete</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div>
+  <app-add-or-update-author (authorCreated)="createOrUpdateAuthor($event)" [authorInfo]="currentAuthor"></app-add-or-update-author>
+</div>

@@ -53,7 +53,7 @@ export class HomeComponent {
   };
 
   public newClicked = function () {
-    this.currentGenre = this.setInitialValuesForGenregData();
+    this.currentGenre = this.setInitialValuesForGenreData();
   };
 
   public deleteClicked(record) {
