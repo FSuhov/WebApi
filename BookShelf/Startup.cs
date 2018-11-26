@@ -9,6 +9,7 @@ using BookShelfBusinessLogic.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BookShelf
 {
@@ -36,10 +37,18 @@ namespace BookShelf
                 });
             var connection = @"Server=DESKTOP-PU90CNF;Database=WebApiLibrary;Trusted_Connection=True;ConnectRetryCount=0";
 
+            services.AddDbContext<LibraryContext>(options => options.UseSqlServer(connection));
             services.AddDbContext<IDataProvider, LibraryContext>(options => options.UseSqlServer(connection));
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IBookService, BookService>();
+
+            // установка конфигурации подключения
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => //CookieAuthenticationOptions
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                });
 
             //services.AddSwaggerGen(c =>
             //{
@@ -75,6 +84,8 @@ namespace BookShelf
             {
                 app.UseHsts();
             }
+
+            app.UseAuthentication();
 
             //app.UseDefaultFiles();
             //app.UseStaticFiles();

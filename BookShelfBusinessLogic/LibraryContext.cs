@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BookShelfBusinessLogic.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,6 +49,9 @@ namespace BookShelfBusinessLogic
         /// Gets or sets the collection of BookGenre entries using EF models
         /// </summary>
         public DbSet<BookGenre> BookGenre { get; set; }
+
+
+        public DbSet<User> Users { get; set; }
 
 
         public List<Genre> GenresList { get => Genres.ToList(); }      

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookShelfBusinessLogic.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,7 +11,7 @@ namespace BookShelfBusinessLogic
         List<Author> AuthorsList { get; }
         List<Book> BooksList { get; }
         List<BookGenre> BooksGenresList { get; }
-        List<BookAuthor> BooksAuthorsList { get; }
+        List<BookAuthor> BooksAuthorsList { get; }        
 
         void AddGenre(Genre genre);
         void DeleteGenre(Genre genre);

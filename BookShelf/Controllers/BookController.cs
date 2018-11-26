@@ -2,6 +2,7 @@
 using System.Linq;
 using BookShelfBusinessLogic;
 using BookShelfBusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookShelf.Controllers
@@ -31,6 +32,7 @@ namespace BookShelf.Controllers
         /// Handles GET request: .../api/book/
         /// </summary>
         /// <returns>Existing collection of Books</returns>
+        [Authorize]
         [HttpGet]
         public ActionResult<List<Book>> GetAll()
         {
